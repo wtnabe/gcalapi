@@ -179,7 +179,7 @@ module GoogleCalendar
     def try_http(uri, header, *args)
       res = nil
       add_authorize_header(header)
-      Net::HTTP.start(uri.host, uri.port, @@proxy_addr, @@proxy_port, @@proxy_user, @@proxy_pass) do |http|
+      Net::HTTP.start(uri.host, uri.port, @@proxy_addr, @@proxy_port, @@proxy_user, @@proxy_pass, :use_ssl => uri.scheme == 'https') do |http|
         header["Cookie"] = @cookie if @cookie
         res = yield(http, path_with_authorized_query(uri), header, args)
         logger.debug(res) if logger
