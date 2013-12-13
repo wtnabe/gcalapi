@@ -5,5 +5,5 @@ Gem::Specification.new do |gem|
   gem.summary = 'GoogleCalendarAPI'
   gem.require_paths = ['lib']
 
-  gem.version = '0.1.2'
+  gem.version = '0.1.2r'
 end
