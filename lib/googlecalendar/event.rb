@@ -140,8 +140,7 @@ XML
       ret = nil
       case self.status
       when :new
-        ret = @srv.insert(self.feed, self.to_s)
-        raise EventInsertFailed, ret.body unless ret.code == "201"
+        ret = new!
       when :old
         ret = @srv.update(self.feed, self.to_s)
         raise EventUpdateFailed, ret.body unless ret.code == "200"
@@ -151,6 +150,21 @@ XML
         raise StandardError, "invalid inner status"
       end
       load_xml(ret.body)
+    end
+
+    def new!
+      ret = @srv.insert(self.feed, self.to_s)
+      case ret.code
+      when "302"
+        self.feed = ret['location']
+        save!
+      when "201"
+        ;
+      else
+        raise EventInsertFailed, (ret.respond_to? :body) ? ret.body : ''
+      end
+
+      ret
     end
 
     # same as destroy! If failed, this method returns false.
